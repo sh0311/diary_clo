@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import React, { useReducer, useRef } from "react";
+import React, { useReducer, useRef, useEffect } from "react";
 
 import Home from "./pages/Home";
 import New from "./pages/New";
@@ -29,13 +29,14 @@ const reducer = (state, action) => {
     default:
       return state;
   }
+  localStorage.setItem("diary", JSON.stringify(newState));
   return newState;
 };
 
 export const DiaryStateContext = React.createContext();
 export const DiaryDispatchContext = React.createContext();
 
-const dummyData = [
+/*const dummyData = [
   {
     id: 1,
     emotion: 1,
@@ -60,13 +61,39 @@ const dummyData = [
     content: "오늘의 일기 4번",
     date: 1706752091015
   }
-];
+]; */
 
 function App() {
-  const [data, dispatch] = useReducer(reducer, dummyData);
+  /*useEffect(() => {
+    //localStorage.setItem("item1", 10);
+    //localStorage.setItem("item2", "20");
+    //localStorage.setItem("item3", JSON.stringify({ value: 30 }));
+    const item1 = localStorage.getItem("item1");
+    const item2 = localStorage.getItem("item2");
+    const item3 = JSON.parse(localStorage.getItem("item3"));
+    console.log(item1, item2, item3);
+  });*/
+
+  const [data, dispatch] = useReducer(reducer, []);
+
+  useEffect(() => {
+    const localData = localStorage.getItem("diary");
+    if (localData) {
+      const diaryList = JSON.parse(localData).sort(
+        (a, b) => parseInt(b.id) - parseInt(a.id)
+      ); //id 내림차순으로 정렬(게시글 생성할 때 id뭐로 해야할지 정해야해서)
+      dataId.current = parseInt(diaryList[0].id) + 1; //새 게시글 id 설정
+
+      //console.log(diaryList);
+      //console.log(dataId);
+
+      dispatch({ type: "INIT", data: diaryList });
+    }
+    //diaryList를 app 컴포넌트가 가지는 data state가 가지는 초기 state로 초기화 해주기
+  });
 
   //console.log(new Date().getTime());
-  const dataId = useRef(6);
+  const dataId = useRef(0);
 
   //CREATE
   const onCreate = (date, content, emotion) => {
