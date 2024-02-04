@@ -87,10 +87,9 @@ function App() {
       //console.log(diaryList);
       //console.log(dataId);
 
-      dispatch({ type: "INIT", data: diaryList });
+      dispatch({ type: "INIT", data: diaryList }); //diaryList를 app 컴포넌트가 가지는 data state가 가지는 초기 state로 초기화 해주기
     }
-    //diaryList를 app 컴포넌트가 가지는 data state가 가지는 초기 state로 초기화 해주기
-  });
+  }, []);
 
   //console.log(new Date().getTime());
   const dataId = useRef(0);
